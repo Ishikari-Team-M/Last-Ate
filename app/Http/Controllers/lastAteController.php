@@ -11,6 +11,9 @@ class lastAteController extends Controller
         //モデルから食べ物を全件取得
         $allFoods = Food::all();
 
+        header('Access-Control-Allow-Origin: *');
+        header( 'Access-Control-Allow-Headers: Authorization, Content-Type' );
+
         return response()->json($allFoods);
     }
 
@@ -30,14 +33,25 @@ class lastAteController extends Controller
        //更新後の全件の名前のみを取得
        $allFoods = Food::select('name')->get();
 
+       header('Access-Control-Allow-Origin: *');
+       header( 'Access-Control-Allow-Headers: Authorization, Content-Type' );
+
        return response()->json($allFoods);
     }
 
     function fetchTime(Request $request) {
         $foodName = $request->foodName;
 
-        //送られてきたデータの名前と最終更新日時を取得
-        $food = Food::where('name',$foodName)->select('name','updated_at')->get();
+        $food = Food::where('name',$foodName)->first();
+        if(isset($food)){
+            //送られてきたデータの名前と最終更新日時を取得
+            $food = Food::where('name',$foodName)->select('name','updated_at')->get();
+        } else {
+            $food = "一致するデータが見つかりません。";
+        }
+
+        header('Access-Control-Allow-Origin: *');
+        header( 'Access-Control-Allow-Headers: Authorization, Content-Type' );
 
         return response()->json($food);
     }
